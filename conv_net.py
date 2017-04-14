@@ -14,11 +14,25 @@ import os
 
 np.random.seed(11)
 
+def shuff(X, y):
+    Xshape = X.shape
+    xs = X.size
+    xl = len(X)
+    yshape = y.shape
+    yl = len(y)
+    c = np.c_[X.reshape(xl, -1), y.reshape(yl, -1)]
+    np.random.shuffle(c)
+    X = c[:, :xs/xl].reshape(Xshape)
+    y = c[:, xs/xl:].reshape(yshape)
+    return X, y
+
 # os.system('aws s3 cp s3://rb-fishery-python-objects/X.npy temp/')
 # os.system('aws s3 cp s3://rb-fishery-python-objects/labels.npy temp/')
 
 X = np.load('temp/test_prep_X.npy')
 y = np.load('temp/test_prep_y.npy')
+
+X, y = shuff(X, y)
 
 print (X.shape)
 img_rows, img_cols = X.shape[1], X.shape[2]
