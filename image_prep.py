@@ -6,6 +6,11 @@ from skimage.transform import resize
 from skimage.util import pad
 
 def fix_nv(image):
+    '''
+    INPUT: numpy.3darray
+    OUTPUT: numpy.3darray
+    if an image has a green or blue/green tint, changes the correlation of the color channels to reduce the tint
+    '''
     h, w, ch = image.shape
     im2 = image.reshape(h*w, 3)
     g_less_r = np.mean(im2, axis=0)[1] - np.mean(im2, axis=0)[0]
@@ -27,9 +32,17 @@ def fix_nv(image):
 
 @adapt_rgb(each_channel)
 def scharr_each(image):
+    '''
+    implements skimage scharr filter which finds edges of an image, and adapts the filter to three color channels
+    '''
     return filters.scharr(image)
 
 def resize_and_pad(image):
+    '''
+    INPUT: numpy.3darray
+    OUTPUT: numpy.3darray
+    reduces the size of an image to 256x144 pixels and keeps the proportions the same by padding images having w/h ratio not equal to 16/9
+    '''
     h, w = image.shape[0], image.shape[1]
     if w > h:
         image = resize(image,(144, 144*w/h, 3))
@@ -47,6 +60,9 @@ def resize_and_pad(image):
     return image
 
 def prep_image(image):
+    '''
+    implement functions and skimage methods to prepare image for processing
+    '''
     image = fix_nv(image)
     image = exposure.adjust_gamma(image, gamma=1.2)
     image = exposure.equalize_adapthist(image)
