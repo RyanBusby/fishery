@@ -1,6 +1,5 @@
 from __future__ import print_function
 import numpy as np
-from theano.ifelse import ifelse
 from keras.optimizers import RMSprop
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
