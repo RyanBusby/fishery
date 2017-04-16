@@ -1,8 +1,9 @@
+from __future__ import print_function
 import numpy as np
 from keras.optimizers import RMSprop
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
-from keras.layers import Convolution2D, MaxPooling2D
+from keras.layers import Conv2D, MaxPooling2D
 from keras.preprocessing.image import ImageDataGenerator
 from keras.utils.np_utils import to_categorical
 from keras import backend as K
@@ -42,12 +43,11 @@ batch_size = 32
 num_classes = 8
 epochs = 25
 
-rms = RMSProp(lr=.0001)
+rms = RMSprop(lr=.0001)
 
 model = Sequential()
 
-model.add(Conv2D(32, (3, 3), padding='same',
-                 input_shape=X_train.shape[1:]))
+model.add(Conv2D(32, (3, 3), padding='same', data_format='channels_last', dilation_rate=1, input_shape=X_train.shape[1:]))
 model.add(Activation('relu'))
 model.add(Conv2D(32, (3, 3)))
 model.add(Activation('relu'))
@@ -79,7 +79,7 @@ model.fit(X_train, Y_train,
           shuffle=True)
 
 score = model.evaluate(X_test, Y_test, verbose=0)
-print 'Test accuracy:', score[1]
+print ('Test accuracy:', score[1])
 
 while True:
     try:
