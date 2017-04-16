@@ -43,7 +43,7 @@ batch_size = 32
 num_classes = 8
 epochs = 50
 
-rms = RMSprop(lr=.00001)
+rms = RMSprop(lr=.00005)
 
 model = Sequential()
 
