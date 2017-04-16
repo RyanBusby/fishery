@@ -36,8 +36,6 @@ for n, species in enumerate(['alb', 'bet', 'dol', 'lag', 'nof', 'other', 'shark'
             print key, 'not downloaded'
             continue
 
-#X = np.array(pics)
-np.save('temp/test_prep_X.npy', pics)
-np.save('temp/test_prep_y.npy', y)
-#os.system('''aws s3 cp 'temp/' s3://rb-fishery-python-objects/ --recursive''')
-#os.system('rm temp/*.npy')
+np.save('temp/X.npy', pics)
+np.save('temp/y.npy', y)
+os.system('''aws s3 cp 'temp/' s3://rb-fishery-python-objects/ --recursive''')
