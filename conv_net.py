@@ -29,8 +29,8 @@ def shuff(X, y):
 # os.system('aws s3 cp s3://rb-fishery-python-objects/X.npy temp/')
 # os.system('aws s3 cp s3://rb-fishery-python-objects/labels.npy temp/')
 
-X = np.load('temp/test_prep_X.npy')
-y = np.load('temp/test_prep_y.npy')
+X = np.load('temp/X.npy')
+y = np.load('temp/y.npy')
 
 X, y = shuff(X, y)
 
