@@ -1,10 +1,9 @@
 from __future__ import print_function
 import numpy as np
-from PIL import Image
-from keras.optimizers import Adagrad, RMSprop
+from keras.optimizers import RMSprop
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
-from keras.layers import Convolution2D, MaxPooling2D
+from keras.layers import Conv2D, MaxPooling2D
 from keras.preprocessing.image import ImageDataGenerator
 from keras.utils.np_utils import to_categorical
 from keras import backend as K
@@ -14,7 +13,7 @@ import os
 
 np.random.seed(11)
 
-def shuff(X, y):
+def shuffle(X, y):
     Xshape = X.shape
     xs = X.size
     xl = len(X)
@@ -26,90 +25,69 @@ def shuff(X, y):
     y = c[:, xs/xl:].reshape(yshape)
     return X, y
 
-# os.system('aws s3 cp s3://rb-fishery-python-objects/X.npy temp/')
-# os.system('aws s3 cp s3://rb-fishery-python-objects/labels.npy temp/')
+name = raw_input('enter name to save model: ')
 
 X = np.load('temp/X.npy')
 y = np.load('temp/y.npy')
 
-X, y = shuff(X, y)
-
-print (X.shape)
-img_rows, img_cols = X.shape[1], X.shape[2]
-batch_size = 200
-n_f = 32
-nb_classes = 8
-nb_epoch = 25
+X, y = shuffle(X, y)
 
 X = X.astype('float32', copy=False)
 X /= 255
 
 X_train, X_test, y_train, y_test = train_test_split(X, y)
+Y_train = np_utils.to_categorical(y_train)
+Y_test = np_utils.to_categorical(y_test)
 
-print('X_train shape:', X_train.shape)
-print(X_train.shape[0], 'train samples')
-print(X_test.shape[0], 'test samples')
-
-if K.image_dim_ordering() == 'th':
-    X_train = X_train.reshape(X_train.shape[0], 3,  img_rows, img_cols)
-    X_test = X_test.reshape(X_test.shape[0], 3, img_rows, img_cols)
-    input_shape = (3, img_rows, img_cols)
-else:
-    X_train = X_train.reshape(X_train.shape[0], img_rows, img_cols, 3)
-    X_test = X_test.reshape(X_test.shape[0], img_rows, img_cols, 3)
-    input_shape = (img_rows, img_cols, 3)
-print (input_shape)
-
-Y_train = np_utils.to_categorical(y_train, nb_classes)
-Y_test = np_utils.to_categorical(y_test, nb_classes)
+batch_size = 32
+num_classes = 8
+epochs = 50
 
 rms = RMSprop(lr=.0001)
 
 model = Sequential()
 
-model.add(Convolution2D(n_f, 3, 3,
-                    border_mode='valid',
-                    input_shape=input_shape))
-
+model.add(Conv2D(32, (3, 3), padding='same', data_format='channels_last', dilation_rate=1, input_shape=X_train.shape[1:]))
 model.add(Activation('relu'))
-model.add(Convolution2D(n_f, 3, 3))
+model.add(Conv2D(32, (3, 3)))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
 
-model.add(Convolution2D(64, 3, 3, border_mode='same'))
+model.add(Conv2D(64, (3, 3), padding='same'))
 model.add(Activation('relu'))
-model.add(Convolution2D(64, 3, 3))
+model.add(Conv2D(64, (3, 3)))
 model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2,2)))
-model.add(Dropout(.25))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.25))
 
 model.add(Flatten())
-model.add(Dense(256))
+model.add(Dense(512))
 model.add(Activation('relu'))
 model.add(Dropout(0.5))
-model.add(Dense(nb_classes))
+model.add(Dense(8))
 model.add(Activation('softmax'))
 
 model.compile(loss='categorical_crossentropy',
               optimizer=rms,
               metrics=['accuracy'])
 
-model.fit(X_train, Y_train, batch_size=batch_size, nb_epoch=nb_epoch,
-          verbose=1, validation_data=(X_test, Y_test))
+model.fit(X_train, Y_train,
+          batch_size=batch_size,
+          epochs=epochs,
+          validation_data=(X_test, Y_test),
+          shuffle=True)
 
 score = model.evaluate(X_test, Y_test, verbose=0)
-print('Test score:', score[0])
-print('Test accuracy:', score[1], ' this is the one we care about.')
-
+print ('Test accuracy:', score[1])
 
 while True:
     try:
-        model.save('models/mod3.h5', 'wb')
+        model.save('models/'+name+'.h5', 'wb')
     except Exception as ex:
         print (ex)
         raw_input()
         continue
     break
 
-os.system('aws s3 cp models/mod3.h5 s3://python-objects/')
+os.system('aws s3 cp models/'+name+'.h5 s3://python-objects/')
