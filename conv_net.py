@@ -47,7 +47,7 @@ rms = RMSprop(lr=.00001)
 
 model = Sequential()
 
-model.add(Conv2D(24, (3, 3), padding='same', data_format='channels_last', dilation_rate=1, input_shape=X_train.shape[1:]))
+model.add(Conv2D(24, (3, 3), padding='same', input_shape=X_train.shape[1:]))
 model.add(Activation('relu'))
 model.add(Conv2D(24, (3, 3)))
 model.add(Activation('relu'))
