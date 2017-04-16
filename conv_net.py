@@ -37,7 +37,7 @@ X, y = shuff(X, y)
 print (X.shape)
 img_rows, img_cols = X.shape[1], X.shape[2]
 batch_size = 200
-n_f = 25
+n_f = 33
 nb_classes = 8
 nb_epoch = 25
 
@@ -75,9 +75,9 @@ model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
 
-model.add(Convolution2D(n_f/2, 3, 3, border_mode='same'))
+model.add(Convolution2D(11, 3, 3, border_mode='same'))
 model.add(Activation('relu'))
-model.add(Convolution2D(n_f/2, 3, 3))
+model.add(Convolution2D(11, 3, 3))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2,2)))
 model.add(Dropout(.25))
@@ -103,11 +103,11 @@ print('Test accuracy:', score[1], ' this is the one we care about.')
 
 while True:
     try:
-        model.save('models/prep_model.h5', 'wb')
+        model.save('models/mod2.h5', 'wb')
     except Exception as ex:
         print (ex)
         raw_input()
         continue
     break
 
-os.system('aws s3 cp models/prep_model64filters.h5 s3://python-objects/')
+os.system('aws s3 cp models/mod2.h5 s3://python-objects/')
