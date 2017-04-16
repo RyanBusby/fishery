@@ -17,7 +17,7 @@ y = []
 for n, species in enumerate(['alb', 'bet', 'dol', 'lag', 'nof', 'other', 'shark', 'yft']):
     name = 'rb-fishery-'+species
     bucket = conn.get_bucket(name)
-    key_list = bucket.get_all_keys(max_keys=5)
+    key_list = bucket.get_all_keys()
     keys = []
     for key in key_list:
         keys.append(key.key)
