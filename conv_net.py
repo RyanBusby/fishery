@@ -1,5 +1,6 @@
 from __future__ import print_function
 import numpy as np
+from theano.ifelse import ifelse
 from keras.optimizers import RMSprop
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
@@ -43,20 +44,20 @@ batch_size = 32
 num_classes = 8
 epochs = 50
 
-rms = RMSprop(lr=.00008)
+rms = RMSprop(lr=.00005)
 
 model = Sequential()
 
-model.add(Conv2D(44, (3, 3), padding='same', data_format='channels_last', dilation_rate=1, input_shape=X_train.shape[1:]))
+model.add(Conv2D(48, (3, 3), padding='same', data_format='channels_last', dilation_rate=1, input_shape=X_train.shape[1:]))
 model.add(Activation('relu'))
-model.add(Conv2D(44, (3, 3)))
+model.add(Conv2D(48, (3, 3)))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
 
-model.add(Conv2D(64, (3, 3), padding='same'))
+model.add(Conv2D(96, (3, 3), padding='same'))
 model.add(Activation('relu'))
-model.add(Conv2D(64, (3, 3)))
+model.add(Conv2D(96, (3, 3)))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
