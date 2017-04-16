@@ -41,7 +41,7 @@ Y_test = np_utils.to_categorical(y_test)
 
 batch_size = 32
 num_classes = 8
-epochs = 25
+epochs = 50
 
 rms = RMSprop(lr=.0001)
 
