@@ -43,20 +43,20 @@ batch_size = 32
 num_classes = 8
 epochs = 50
 
-rms = RMSprop(lr=.000075)
+rms = RMSprop(lr=.00001)
 
 model = Sequential()
 
-model.add(Conv2D(48, (3, 3), padding='same', data_format='channels_last', dilation_rate=1, input_shape=X_train.shape[1:]))
+model.add(Conv2D(24, (3, 3), padding='same', data_format='channels_last', dilation_rate=1, input_shape=X_train.shape[1:]))
 model.add(Activation('relu'))
-model.add(Conv2D(48, (3, 3)))
+model.add(Conv2D(24, (3, 3)))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
 
-model.add(Conv2D(96, (3, 3), padding='same'))
+model.add(Conv2D(48, (3, 3), padding='same'))
 model.add(Activation('relu'))
-model.add(Conv2D(96, (3, 3)))
+model.add(Conv2D(48, (3, 3)))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
