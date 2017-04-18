@@ -25,8 +25,8 @@ def shuffle(X, y):
     y = c[:, xs/xl:].reshape(yshape)
     return X, y
 
-X = np.load('temp/X.npy')
-y = np.load('temp/y.npy')
+X = np.load('temp/bl_X.npy')
+y = np.load('temp/bl_y.npy')
 
 X, y = shuffle(X, y)
 
@@ -37,32 +37,32 @@ X_train, X_test, y_train, y_test = train_test_split(X, y)
 Y_train = np_utils.to_categorical(y_train)
 Y_test = np_utils.to_categorical(y_test)
 
-batch_size = 32
+batch_size = 25
 num_classes = 8
-epochs = 50
+epochs = 31
 
-rms = RMSprop(lr=.00008)
+rms = RMSprop(lr=.000025)
 
 model = Sequential()
 
-model.add(Conv2D(36, (3, 3), padding='same', input_shape=X_train.shape[1:]))
-model.add(Activation('relu'))
-model.add(Conv2D(36, (3, 3)))
-model.add(Activation('relu'))
+model.add(Conv2D(48, (3, 3), padding='same', input_shape=X_train.shape[1:]))
+model.add(Activation('tanh'))
+model.add(Conv2D(48, (3, 3)))
+model.add(Activation('tanh'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
 
-model.add(Conv2D(72, (3, 3), padding='same'))
-model.add(Activation('relu'))
-model.add(Conv2D(72, (3, 3)))
-model.add(Activation('relu'))
+model.add(Conv2D(96, (3, 3), padding='same'))
+model.add(Activation('tanh'))
+model.add(Conv2D(96, (3, 3)))
+model.add(Activation('tanh'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
 
 model.add(Flatten())
 model.add(Dense(512))
-model.add(Activation('relu'))
-model.add(Dropout(0.5))
+model.add(Activation('tanh'))
+model.add(Dropout(0.25))
 model.add(Dense(8))
 model.add(Activation('softmax'))
 
@@ -81,10 +81,11 @@ print ('Test accuracy:', score[1])
 
 while True:
     try:
-        model.save('models/'+name+'.h5', 'wb')
+        model.save('models/bl_mod.h5', 'wb')
     except Exception as ex:
         print (ex)
         raw_input()
         continue
     break
 
+os.system('aws s3 cp models/bl_mod.h5 s3://rb-fishery-python-objects/')
