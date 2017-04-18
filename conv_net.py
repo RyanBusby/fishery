@@ -25,8 +25,6 @@ def shuffle(X, y):
     y = c[:, xs/xl:].reshape(yshape)
     return X, y
 
-name = raw_input('enter name to save model: ')
-
 X = np.load('temp/X.npy')
 y = np.load('temp/y.npy')
 
@@ -43,7 +41,7 @@ batch_size = 32
 num_classes = 8
 epochs = 50
 
-rms = RMSprop(lr=.00005)
+rms = RMSprop(lr=.00008)
 
 model = Sequential()
 
@@ -90,4 +88,3 @@ while True:
         continue
     break
 
-os.system('aws s3 cp models/'+name+'.h5 s3://python-objects/')

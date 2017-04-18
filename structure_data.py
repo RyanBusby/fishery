@@ -38,4 +38,3 @@ for n, species in enumerate(['alb', 'bet', 'dol', 'lag', 'nof', 'other', 'shark'
 
 np.save('temp/X.npy', pics)
 np.save('temp/y.npy', y)
-os.system('''aws s3 cp 'temp/' s3://rb-fishery-python-objects/ --recursive''')
