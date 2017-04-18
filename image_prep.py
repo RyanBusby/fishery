@@ -66,7 +66,5 @@ def prep_image(image):
     image = fix_nv(image)
     image = exposure.adjust_gamma(image, gamma=1.2)
     image = exposure.equalize_adapthist(image)
-    image = 1 - scharr_each(image)
-    image = exposure.equalize_adapthist(image)
     image = resize_and_pad(image)
     return image
