@@ -1,4 +1,5 @@
 import glob, os
+import numpy as np
 import matplotlib.pyplot as plt
 from image_prep import prep_image
 from keras.models import load_model
